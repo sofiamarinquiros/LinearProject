@@ -1,0 +1,71 @@
+from PIL import Image
+from pathlib import Path
+import os
+import cv2
+
+
+##Site Later: https://www.geeksforgeeks.org/how-to-iterate-over-files-in-directory-using-python/
+
+#Create new folder, output files to it. If it already exists then do nothing.
+os.makedirs( '/LinearProject/formattedImgs/', exist_ok=True )
+
+
+# assign directory
+directory = 'unformattedImgs'
+ 
+count = 0
+# iterate over files in that directory which loops through all images
+for filename in os.listdir(directory):
+    f = os.path.join(directory, filename)
+
+    # Checking if it is a file. If so,'f' is the filename
+    if os.path.isfile(f):
+
+        ###########image processing here ##################
+
+        # open image through open CV 
+        im = cv2.imread(f)
+
+        #greyscale through openCV cvtColor
+        greyScale = cv2.cvtColor(im, cv2.COLOR_RGB2GRAY)
+
+        #convert from openCV to Pillow
+        image = Image.fromarray(greyScale)  
+        
+        #grab dimetions for cropping purposes
+        width, height = image.size
+
+        centerY = height/2
+        centerX = width/2
+        offset = 1/3 * height
+
+        left = centerX - offset 
+        top = centerY + offset
+        right = centerX + offset
+        bottom = (centerY - offset)
+        print(left, top, right, bottom)
+
+        #crop image square
+        image = image.crop((left, bottom, right, top))
+        image.show()
+        #size it down
+        image_tiny = image.resize((200,200))
+        image_tiny.show()
+        ##Greyscale the image
+        
+        #save to that folder
+        im1 = image_tiny.save("/LinearProject/formattedImgs/image"+str(count)+".jpg")
+
+        count += 1
+        
+        
+
+    
+   
+
+    
+
+    
+
+
+

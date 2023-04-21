@@ -2,7 +2,8 @@ from PIL import Image
 from pathlib import Path
 import os
 import cv2
-
+import numpy as np
+import json
 
 ##Site Later: https://www.geeksforgeeks.org/how-to-iterate-over-files-in-directory-using-python/
 
@@ -12,7 +13,8 @@ os.makedirs( '/LinearProject/formattedImgs/', exist_ok=True )
 
 # assign directory
 directory = 'unformattedImgs'
- 
+faces = {}
+faces['images'] = []
 count = 0
 # iterate over files in that directory which loops through all images
 for filename in os.listdir(directory):
@@ -37,7 +39,7 @@ for filename in os.listdir(directory):
 
         centerY = height/2
         centerX = width/2
-        offset = 1/3 * height
+        offset = 1/4 * height
 
         left = centerX - offset 
         top = centerY + offset
@@ -47,16 +49,22 @@ for filename in os.listdir(directory):
 
         #crop image square
         image = image.crop((left, bottom, right, top))
-        image.show()
         #size it down
-        image_tiny = image.resize((200,200))
-        image_tiny.show()
-        ##Greyscale the image
+        image = image.resize((64,64))
         
+        imageData = np.asarray(image)
+        #Show Image
+        image.show()
+        faces['images'].append(imageData.tolist())
+        #print(faces['images'][0])
         #save to that folder
-        im1 = image_tiny.save("/LinearProject/formattedImgs/image"+str(count)+".jpg")
 
-        count += 1
+    count += 1
+    print(count)
+        
+        
+with open("campbell.json", "w") as outfile:
+            json.dump(faces, outfile)
         
         
 
